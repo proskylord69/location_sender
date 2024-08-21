@@ -1,20 +1,17 @@
 {
-    "version": 2,
-    "name": "location_sender",
-    "routes": [
-      { "handle": "filesystem" },
-      {
-        "src": "/app.js",
-        "dest": "/app.js"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/server.js"
-      },
-          {
-        "src": "/(.*)",
-        "dest": "/index.html"
-      }
-  
-    ]
-  }
+  "version": 2,
+  "name": "location_sender",
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/api/(.*)$",  
+      "dest": "/server.js"
+    },
+    {
+      "src": "/(.*)",  
+      "dest": "/index.html"
+    }
+  ]
+}
