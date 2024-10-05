@@ -5,6 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
   const [isSharing, setIsSharing] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);  // New state to track waiting status
   const [messages, setMessages] = useState([]);
   const [busNumber, setBusNumber] = useState(localStorage.getItem('busNumber') || '');
   const [error, setError] = useState('');
@@ -30,6 +31,7 @@ function App() {
           const newMessage = `Location shared at ${currentTime} - Latitude: ${latitude}, Longitude: ${longitude}, Speed: ${speed} m/s, Heading: ${heading}°`;
 
           setMessages((prevMessages) => [newMessage, ...prevMessages]);
+          setIsWaiting(false); // Clear the "Please wait" message after the first update
 
           intervalId = setTimeout(() => {
             if (isSharing) {
@@ -53,6 +55,7 @@ function App() {
     };
 
     if (isSharing && busNumber) {
+      setIsWaiting(true); // Show "Please wait" when starting location sharing
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude, speed, heading } = position.coords;
@@ -121,13 +124,17 @@ function App() {
       )}
 
       <p>Current Location: Latitude {locationData.latitude}, Longitude {locationData.longitude}</p>
-      <p>Speed: {locationData.speed} km/s, Heading: {locationData.heading}°</p>
+      <p>Speed: {locationData.speed} km/hr, Heading: {locationData.heading}°</p>
 
       <div className="location-updates">
         <h4>Location Updates</h4>
-        {messages.map((msg, index) => (
-          <p key={index}>{msg}</p>
-        ))}
+        {isWaiting ? (
+          <p>Please wait...</p>  // Display "Please wait" while waiting for the first location
+        ) : (
+          messages.map((msg, index) => (
+            <p key={index}>{msg}</p>
+          ))
+        )}
       </div>
 
       {isAuthenticated ? (

@@ -108,6 +108,10 @@ button {
   background: red;
 }
 
-p,h4{
+p{
   color: white!important;
+}
+
+.greencolor{
+  color: green;
 }
