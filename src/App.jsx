@@ -103,6 +103,12 @@ function App() {
         onChange={(e) => setBusNumber(e.target.value)}
         disabled={isSharing}
       />
+
+{
+        isAuthenticated && (
+     
+   
+      <div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <button onClick={handleStart} disabled={isSharing || !busNumber}>
         Start Sharing Location
@@ -110,6 +116,10 @@ function App() {
       <button onClick={handleStop} disabled={!isSharing}>
         Stop Sharing Location
       </button>
+      </div>
+    )
+    }
+
       <p>Current Location: Latitude {locationData.latitude}, Longitude {locationData.longitude}</p>
       <p>Speed: {locationData.speed} m/s, Heading: {locationData.heading}°</p>
 
