@@ -6,14 +6,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 function App() {
   const [isSharing, setIsSharing] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [busNumber, setBusNumber] = useState('');
+  const [busNumber, setBusNumber] = useState(localStorage.getItem('busNumber') || '');
   const [error, setError] = useState('');
   const [locationData, setLocationData] = useState({ latitude: null, longitude: null, speed: null, heading: null });
   const BACKENDURL = import.meta.env.VITE_BACKENDURL;
 
-  const { loginWithRedirect } = useAuth0();
-  const { logout } = useAuth0();
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
 
   useEffect(() => {
     let intervalId;
@@ -82,6 +80,8 @@ function App() {
     } else {
       setError('');
       setIsSharing(true);
+      // Store the bus number in localStorage when starting location sharing
+      localStorage.setItem('busNumber', busNumber);
     }
   };
 
@@ -89,12 +89,16 @@ function App() {
     setIsSharing(false);
   };
 
+  const handleLogout = () => {
+    // Clear the bus number from localStorage when the user logs out
+    localStorage.removeItem('busNumber');
+    logout({ logoutParams: { returnTo: window.location.origin } });
+  };
+
   return (
-    
     <div className="container">
-    {
-      isAuthenticated && <p>{user.name}</p>
-    }
+      {isAuthenticated && <p>{user.name}</p>}
+
       <input
         className="busnumberfeild"
         type="text"
@@ -104,21 +108,17 @@ function App() {
         disabled={isSharing}
       />
 
-{
-        isAuthenticated && (
-     
-   
-      <div>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button onClick={handleStart} disabled={isSharing || !busNumber}>
-        Start Sharing Location
-      </button>
-      <button onClick={handleStop} disabled={!isSharing}>
-        Stop Sharing Location
-      </button>
-      </div>
-    )
-    }
+      {isAuthenticated && (
+        <div>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          <button onClick={handleStart} disabled={isSharing || !busNumber}>
+            Start Sharing Location
+          </button>
+          <button onClick={handleStop} disabled={!isSharing}>
+            Stop Sharing Location
+          </button>
+        </div>
+      )}
 
       <p>Current Location: Latitude {locationData.latitude}, Longitude {locationData.longitude}</p>
       <p>Speed: {locationData.speed} km/s, Heading: {locationData.heading}°</p>
@@ -129,15 +129,16 @@ function App() {
           <p key={index}>{msg}</p>
         ))}
       </div>
-      {
-        isAuthenticated ? (
-        <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
-      Log Out
-    </button>
-    ):(
-      <button onClick={() => loginWithRedirect()}>Log In</button>
-    )
-    }
+
+      {isAuthenticated ? (
+        <button className='logout-btn' onClick={handleLogout}>
+          Log Out
+        </button>
+      ) : (
+        <button className='login-btn' onClick={() => loginWithRedirect()}>
+          Log In To Start Sharing Location
+        </button>
+      )}
     </div>
   );
 }

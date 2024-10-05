@@ -94,3 +94,20 @@ button {
   margin-top: 10px;
   background-color: #000000;
 }
+
+.login-btn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: white;
+  background: green;
+}
+.logout-btn{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: white;
+  background: red;
+}
+
+p,h4{
+  color: white!important;
+}
