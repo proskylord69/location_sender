@@ -121,7 +121,7 @@ function App() {
     }
 
       <p>Current Location: Latitude {locationData.latitude}, Longitude {locationData.longitude}</p>
-      <p>Speed: {locationData.speed} m/s, Heading: {locationData.heading}°</p>
+      <p>Speed: {locationData.speed} km/s, Heading: {locationData.heading}°</p>
 
       <div className="location-updates">
         <h4>Location Updates</h4>
