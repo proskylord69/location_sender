@@ -14,6 +14,15 @@ function App() {
 
   const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
 
+  // Save user info in localStorage and clear on logout
+  useEffect(() => {
+    if (isAuthenticated) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [isAuthenticated, user]);
+
   useEffect(() => {
     let intervalId;
 
@@ -93,8 +102,9 @@ function App() {
   };
 
   const handleLogout = () => {
-    // Clear the bus number from localStorage when the user logs out
+    // Clear the bus number and user info from localStorage when the user logs out
     localStorage.removeItem('busNumber');
+    localStorage.removeItem('user');
     logout({ logoutParams: { returnTo: window.location.origin } });
   };
 
