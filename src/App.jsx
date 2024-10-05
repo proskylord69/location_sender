@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
   const [isSharing, setIsSharing] = useState(false);
@@ -9,6 +10,10 @@ function App() {
   const [error, setError] = useState('');
   const [locationData, setLocationData] = useState({ latitude: null, longitude: null, speed: null, heading: null });
   const BACKENDURL = import.meta.env.VITE_BACKENDURL;
+
+  const { loginWithRedirect } = useAuth0();
+  const { logout } = useAuth0();
+  const { user, isAuthenticated, isLoading } = useAuth0();
 
   useEffect(() => {
     let intervalId;
@@ -85,7 +90,11 @@ function App() {
   };
 
   return (
+    
     <div className="container">
+    {
+      isAuthenticated && <p>{user.name}</p>
+    }
       <input
         className="busnumberfeild"
         type="text"
@@ -110,6 +119,15 @@ function App() {
           <p key={index}>{msg}</p>
         ))}
       </div>
+      {
+        isAuthenticated ? (
+        <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+      Log Out
+    </button>
+    ):(
+      <button onClick={() => loginWithRedirect()}>Log In</button>
+    )
+    }
     </div>
   );
 }
